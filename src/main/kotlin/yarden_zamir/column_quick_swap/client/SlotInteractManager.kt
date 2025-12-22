@@ -22,7 +22,7 @@ object SlotInteractManager {
     private const val OPEN_COOLDOWN_MS = 100L
 
     val COLUMN_PICK_KEY =
-        KeyMapping("key.column_quick_swap.column_pick", InputConstants.KEY_G, "key.categories.inventory")
+        KeyMapping("key.column_quick_swap.column_pick", InputConstants.KEY_V, "key.categories.inventory")
 
     init {
         MOD_BUS.addListener { event: RegisterKeyMappingsEvent ->

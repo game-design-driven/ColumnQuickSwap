@@ -13,6 +13,7 @@ import net.minecraftforge.api.distmarker.Dist
 import net.minecraftforge.api.distmarker.OnlyIn
 import net.minecraftforge.client.event.ScreenEvent
 import net.minecraftforge.common.MinecraftForge
+import yarden_zamir.column_quick_swap.ClientConfig
 import yarden_zamir.column_quick_swap.ColumnQuickSwap
 import yarden_zamir.column_quick_swap.DrawableNineSliceTexture
 import yarden_zamir.column_quick_swap.networking.C2SSwapColumnSlotPacket
@@ -101,17 +102,19 @@ class ColumnPickScreen(
     }
 
     private fun selectSlot(columnRow: Int) {
-        // Play click sound - quieter, higher pitch
-        minecraft?.soundManager?.play(
-            SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK.value(), 1.4f, 0.3f)
-        )
+        val cfg = ClientConfig.config
+        if (cfg.playSound) {
+            minecraft?.soundManager?.play(
+                SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK.value(), cfg.soundPitch, cfg.soundVolume)
+            )
+        }
         Networking.channel.sendToServer(C2SSwapColumnSlotPacket(hotbarSlot, columnRow))
         onClose()
     }
 
     override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
-        // Check if key released - select hovered item
-        if (!SlotInteractManager.columnPicking) {
+        // Check if key released - select hovered item (if closeOnRelease enabled)
+        if (ClientConfig.config.closeOnRelease && !SlotInteractManager.columnPicking) {
             renderables.asSequence()
                 .filterIsInstance<ColumnSlotButton>()
                 .firstOrNull { it.isMouseOver(mouseX.toDouble(), mouseY.toDouble()) }
@@ -156,6 +159,8 @@ class ColumnPickScreen(
     override fun isPauseScreen(): Boolean = false
 
     override fun mouseScrolled(mouseX: Double, mouseY: Double, delta: Double): Boolean {
+        if (!ClientConfig.config.allowScroll) return false
+
         // Allow scrolling to change hotbar selection
         val player = minecraft?.player ?: return false
         val inventory = player.inventory
@@ -207,8 +212,8 @@ private class ColumnSlotButton(
 
         // Hover highlight
         if (isMouseOver(mouseX.toDouble(), mouseY.toDouble())) {
-            guiGraphics.fill(x + 1, y + 1, x + width - 1, y + height - 1, 0x80FFFFFF.toInt())
-            if (!item.isEmpty) {
+            guiGraphics.fill(x + 1, y + 1, x + width - 1, y + height - 1, ClientConfig.config.highlightColor)
+            if (!item.isEmpty && ClientConfig.config.showTooltips) {
                 renderTooltip(guiGraphics, mouseX, mouseY)
             }
         }
