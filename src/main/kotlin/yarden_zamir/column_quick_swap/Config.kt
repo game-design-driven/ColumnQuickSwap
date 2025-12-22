@@ -21,7 +21,7 @@ internal val json = Json {
 
 @OnlyIn(Dist.CLIENT)
 @Serializable
-data class ClientConfig(val pressTicks: Int = 20) {
+data class ClientConfig(val pressTicks: Int = 0) {
     companion object {
         private val path = FMLPaths.CONFIGDIR.get() / "${ColumnQuickSwap.ID}.client.json"
 
