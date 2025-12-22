@@ -1,6 +1,6 @@
 # Column Quick Swap
 
-A Minecraft Forge mod for 1.20.1 that lets you quickly swap items between your hotbar and the inventory column above it.
+Quickly swap items between your hotbar and the inventory column above it.
 
 ## Usage
 
