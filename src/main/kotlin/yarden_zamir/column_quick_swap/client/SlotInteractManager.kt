@@ -18,6 +18,7 @@ import yarden_zamir.column_quick_swap.ClientConfig
 object SlotInteractManager {
     var columnPickPressedTicks = 0
     var columnPicking = false
+    var suppressReopenUntilRelease = false
     private var lastColumnPickOpenTime = 0L
     private const val OPEN_COOLDOWN_MS = 100L
 
@@ -41,6 +42,7 @@ object SlotInteractManager {
                         COLUMN_PICK_KEY.isDown = false
                         columnPickPressedTicks = 0
                         columnPicking = false
+                        suppressReopenUntilRelease = false
                     }
                 }
             }
@@ -74,8 +76,17 @@ object SlotInteractManager {
             val minecraft = Minecraft.getInstance()
             val screen = minecraft.screen
 
-            // Column pick - only when no screen is open
-            if (columnPickPressedTicks > ClientConfig.config.pressTicks && screen == null) {
+            // Check physical key state to reset suppress flag
+            val keyPhysicallyDown = InputConstants.isKeyDown(
+                minecraft.window.window,
+                COLUMN_PICK_KEY.key.value
+            )
+            if (!keyPhysicallyDown) {
+                suppressReopenUntilRelease = false
+            }
+
+            // Column pick - only when no screen is open and not suppressed
+            if (columnPickPressedTicks > ClientConfig.config.pressTicks && screen == null && !suppressReopenUntilRelease) {
                 if (!columnPicking) {
                     val now = System.currentTimeMillis()
                     if (now - lastColumnPickOpenTime < OPEN_COOLDOWN_MS) return@addListener

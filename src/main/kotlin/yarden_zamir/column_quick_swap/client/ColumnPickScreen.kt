@@ -108,7 +108,19 @@ class ColumnPickScreen(
                 SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK.value(), cfg.soundPitch, cfg.soundVolume)
             )
         }
-        Networking.channel.sendToServer(C2SSwapColumnSlotPacket(hotbarSlot, columnRow))
+        // Prevent reopen if key is still held (click-swap vs key-release-swap)
+        val keyPhysicallyDown = InputConstants.isKeyDown(
+            minecraft!!.window.window,
+            SlotInteractManager.COLUMN_PICK_KEY.key.value
+        )
+        if (keyPhysicallyDown) {
+            SlotInteractManager.suppressReopenUntilRelease = true
+        }
+        runCatching {
+            Networking.channel.sendToServer(C2SSwapColumnSlotPacket(hotbarSlot, columnRow))
+        }.onFailure {
+            ColumnQuickSwap.LOGGER.error("Failed to send swap packet", it)
+        }
         onClose()
     }
 
@@ -195,6 +207,10 @@ private class ColumnSlotButton(
     private val keyNumber: Int,
     onPress: OnPress
 ) : Button(x, y, width, height, Component.empty(), onPress, DEFAULT_NARRATION) {
+
+    override fun playDownSound(soundManager: net.minecraft.client.sounds.SoundManager) {
+        // Sound is handled in selectSlot() based on config
+    }
 
     override fun renderWidget(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
         val font = Minecraft.getInstance().font
