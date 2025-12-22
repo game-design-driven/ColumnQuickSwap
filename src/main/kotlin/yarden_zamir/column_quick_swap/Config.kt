@@ -21,7 +21,24 @@ internal val json = Json {
 
 @OnlyIn(Dist.CLIENT)
 @Serializable
-data class ClientConfig(val pressTicks: Int = 20) {
+data class ClientConfig(
+    /** Ticks to hold key before popup opens (0 = instant) */
+    val pressTicks: Int = 0,
+    /** Play sound when swapping items */
+    val playSound: Boolean = true,
+    /** Sound volume (0.0 to 1.0) */
+    val soundVolume: Float = 0.3f,
+    /** Sound pitch (higher = higher pitch) */
+    val soundPitch: Float = 1.4f,
+    /** Close popup and select item when key is released */
+    val closeOnRelease: Boolean = true,
+    /** Highlight color for hovered slot (ARGB hex) */
+    val highlightColor: Int = 0x80FFFFFF.toInt(),
+    /** Show item tooltips on hover */
+    val showTooltips: Boolean = true,
+    /** Allow scrolling to change hotbar slot while popup is open */
+    val allowScroll: Boolean = true
+) {
     companion object {
         private val path = FMLPaths.CONFIGDIR.get() / "${ColumnQuickSwap.ID}.client.json"
 
