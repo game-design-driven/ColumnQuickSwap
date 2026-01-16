@@ -10,4 +10,3 @@ Quickly swap items between your hotbar and the inventory column above it.
    - **Mouse**: Hover and release V
    - **Keys**: Press 1, 2, or 3 (top to bottom)
    - **Scroll**: Change hotbar selection while picker is open
-
