@@ -4,24 +4,24 @@ license='MIT'
 displayURL='${source}'
 
 [[mods]]
-modId="$id"
-version="$version"
-displayName="$name"
-authors="$author"
+modId="${id}"
+version="${version}"
+displayName="${name}"
+authors="${author}"
 description='''
-$description
+${description}
 '''
 
 [[dependencies.${id}]]
 modId="forge"
 mandatory=true
-versionRange="[47,)"
+versionRange="${forge_version_range}"
 ordering="NONE"
 side="BOTH"
 
 [[dependencies.${id}]]
 modId="minecraft"
 mandatory=true
-versionRange="[1.20.1,1.21)"
+versionRange="${minecraft_version_range}"
 ordering="NONE"
 side="BOTH"
