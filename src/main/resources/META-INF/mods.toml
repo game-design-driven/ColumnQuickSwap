@@ -25,3 +25,11 @@ mandatory=true
 versionRange="${minecraft_version_range}"
 ordering="NONE"
 side="BOTH"
+
+[mc-publish]
+modrinth = "vYQcU5aT"
+curseforge = 1410978
+loader = "forge"
+mc_version = "1.20.1"
+modrinth_slug = "column-quick-swap"
+curseforge_slug = "columnquickswap"
